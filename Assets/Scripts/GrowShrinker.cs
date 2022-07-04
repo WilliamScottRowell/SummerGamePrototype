@@ -16,6 +16,10 @@ public class GrowShrinker : MonoBehaviour
     public bool scaleUp;
     public bool scaleDown;
 
+    // Time management
+    public float startDelayTime = 0.0f;
+    bool started = false;
+
 
     // Private variables to control scaling logic
     Vector3 minScaling;
@@ -31,33 +35,42 @@ public class GrowShrinker : MonoBehaviour
         {
             onlyDown = true;
         }
+        Invoke("StartGrowShrink", startDelayTime);
+    }
+
+    void StartGrowShrink()
+    {
+        started = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Update scale references each frame in case changes are made in the inspector
-        minScaling = new Vector3(minXSize, minYSize, minZSize);
-        maxScaling = new Vector3(maxXSize, maxYSize, maxZSize);
+        if(started)
+        {
+            // Update scale references each frame in case changes are made in the inspector
+            minScaling = new Vector3(minXSize, minYSize, minZSize);
+            maxScaling = new Vector3(maxXSize, maxYSize, maxZSize);
 
-        // Core scaling logic!
-        if (scaleUp)
-        {
-            transform.localScale = Vector3.SmoothDamp(transform.localScale, maxScaling, ref velocity, scalingTime);
-            if(transform.localScale.x >= maxScaling.x - scaleEndTolerance)
+            // Core scaling logic!
+            if (scaleUp)
             {
-                scaleUp = false;
-            }
-        }
-        else if(scaleDown)
-        {
-            transform.localScale = Vector3.SmoothDamp(transform.localScale, minScaling, ref velocity, scalingTime);
-            if (transform.localScale.x <= minScaling.x + scaleEndTolerance)
-            {
-                if(!onlyDown)
+                transform.localScale = Vector3.SmoothDamp(transform.localScale, maxScaling, ref velocity, scalingTime);
+                if (transform.localScale.x >= maxScaling.x - scaleEndTolerance)
                 {
-                    scaleUp = true;
-                } 
+                    scaleUp = false;
+                }
+            }
+            else if (scaleDown)
+            {
+                transform.localScale = Vector3.SmoothDamp(transform.localScale, minScaling, ref velocity, scalingTime);
+                if (transform.localScale.x <= minScaling.x + scaleEndTolerance)
+                {
+                    if (!onlyDown)
+                    {
+                        scaleUp = true;
+                    }
+                }
             }
         }
     }

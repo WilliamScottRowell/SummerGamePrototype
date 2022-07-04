@@ -20,6 +20,9 @@ namespace CMF
         bool jumpKeyWasPressed = false;
 		bool jumpKeyWasLetGo = false;
 		bool jumpKeyIsPressed = false;
+		public float sprintFactor = 2;
+		public int maxJumps = 1;
+		int currJumps;
 
 		//Movement speed;
 		public float movementSpeed = 7f;
@@ -60,6 +63,10 @@ namespace CMF
 		[Tooltip("Whether to calculate and apply momentum relative to the controller's transform.")]
 		public bool useLocalMomentum = false;
 
+		// Smart Fall Warp Logic Control
+		public SmartFallWarp smartFallWarp;
+		public bool useSmartFallWarp;
+
 		//Enum describing basic controller states; 
 		public enum ControllerState
 		{
@@ -86,7 +93,10 @@ namespace CMF
 				Debug.LogWarning("No character input script has been attached to this gameobject", this.gameObject);
 
 			Setup();
-		}
+
+			smartFallWarp = GetComponentInChildren<SmartFallWarp>();
+
+        }
 
 		//This function is called right after Awake(); It can be overridden by inheriting scripts;
 		protected virtual void Setup()
@@ -96,7 +106,11 @@ namespace CMF
 		void Update()
 		{
 			HandleJumpKeyInput();
-		}
+			if(useSmartFallWarp)
+            {
+                HandleSmartFallWarp();
+            }
+        }
 
         //Handle jump booleans for later use in FixedUpdate;
         void HandleJumpKeyInput()
@@ -209,7 +223,15 @@ namespace CMF
 			Vector3 _velocity = CalculateMovementDirection();
 
 			//Multiply (normalized) velocity with movement speed;
-			_velocity *= movementSpeed;
+			if(Input.GetKey(KeyCode.LeftShift)) 
+            {
+                _velocity *= movementSpeed * sprintFactor;
+            }
+			else
+            {
+                _velocity *= movementSpeed;
+            }				
+			
 
 			return _velocity;
 		}
@@ -342,10 +364,11 @@ namespace CMF
         //Check if player has initiated a jump;
         void HandleJumping()
         {
-            if (currentControllerState == ControllerState.Grounded)
+            if (currentControllerState == ControllerState.Grounded || currJumps < maxJumps)
             {
                 if ((jumpKeyIsPressed == true || jumpKeyWasPressed) && !jumpInputIsLocked)
                 {
+					currJumps++;
                     //Call events;
                     OnGroundContactLost();
                     OnJumpStart();
@@ -527,6 +550,7 @@ namespace CMF
 					_collisionVelocity = tr.localToWorldMatrix * _collisionVelocity;
 
 				OnLand(_collisionVelocity);
+				currJumps = 0;
 			}
 				
 		}
@@ -626,5 +650,30 @@ namespace CMF
 			else
 				momentum = _newMomentum;
 		}
+
+		// Smart warp control variables
+		bool smartWarpUpdateReady = true;
+		float smartWarpTimeGap = 1.0f;
+		float currSmarWarpTimeGap = 0.0f;
+
+		void HandleSmartFallWarp()
+        {
+            if(currentControllerState == ControllerState.Grounded && smartWarpUpdateReady)
+			{
+				Debug.Log("New warp point set!");
+				currSmarWarpTimeGap = 0.0f;
+				smartWarpUpdateReady = false;
+				smartFallWarp.SmartWarpWaypointSet();
+			}
+			else
+            {
+				currSmarWarpTimeGap += Time.deltaTime;
+				if(currSmarWarpTimeGap >= smartWarpTimeGap)
+                {
+					smartWarpUpdateReady = true;
+                }
+            }
+        }
 	}
+
 }

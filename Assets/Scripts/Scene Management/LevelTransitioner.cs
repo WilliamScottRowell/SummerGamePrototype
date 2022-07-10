@@ -14,7 +14,11 @@ public class LevelTransitioner : MonoBehaviour
     private void Start()
     {
         floatingText = GetComponentInChildren<TMP_Text>();
-        floatingText.enabled = false;
+        if(floatingText != null)
+        {
+            floatingText.enabled = false;
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -23,7 +27,10 @@ public class LevelTransitioner : MonoBehaviour
         {
             Debug.Log("In range");
             inRangeToMove = true;
-            floatingText.enabled = true;
+            if (floatingText != null)
+            {
+                floatingText.enabled = true;
+            }
         }
     }
 
@@ -32,7 +39,10 @@ public class LevelTransitioner : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             inRangeToMove = false;
-            floatingText.enabled = false;
+            if (floatingText != null)
+            {
+                floatingText.enabled = false;
+            }
         }
     }
 

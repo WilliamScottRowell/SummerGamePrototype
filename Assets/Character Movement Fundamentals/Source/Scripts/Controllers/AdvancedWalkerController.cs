@@ -660,7 +660,6 @@ namespace CMF
         {
             if(currentControllerState == ControllerState.Grounded && smartWarpUpdateReady)
 			{
-				Debug.Log("New warp point set!");
 				currSmarWarpTimeGap = 0.0f;
 				smartWarpUpdateReady = false;
 				smartFallWarp.SmartWarpWaypointSet();

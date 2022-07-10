@@ -11,7 +11,7 @@ public class SmartFallWarp : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.Find("SummerPlayer3P");
+        player = GameObject.Find("Player");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -33,7 +33,6 @@ public class SmartFallWarp : MonoBehaviour
     {
         if(grounded)
         {
-            Debug.Log("Respawn point set successfully!");
             respawnPoint = gameObject.transform.position;
         }  
     }

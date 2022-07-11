@@ -16,11 +16,12 @@ public class PlayerDressingRoom : MonoBehaviour
     public SkinnedMeshRenderer head;
     public MeshRenderer[] arms;
 
+    // Connect to cosmetics master manager
+    public CosmeticsMasterManager cosmeticsManager;
+
     private void Start()
     {
-        currArmMatNum = 0;
-        currBodyMatNum = 0;
-        currHeadMatNum = 0;
+        cosmeticsManager = GameObject.Find("GameManager").GetComponentInChildren<CosmeticsMasterManager>();
     }
 
     // Start is called before the first frame update
@@ -56,21 +57,16 @@ public class PlayerDressingRoom : MonoBehaviour
 
     void UpdateBodyMaterials()
     {
-        Material[] mats = body.materials;
-        mats[1] = bodyMaterials[currBodyMatNum];
-        body.materials = mats;
+        cosmeticsManager.UpdateBodyMaterial(bodyMaterials[currBodyMatNum]);
     }
 
     void UpdateHeadMaterials()
     {
-        Material[] mats = body.materials;
-        mats[0] = headMaterials[currHeadMatNum];
-        body.materials = mats;
+        cosmeticsManager.UpdateHeadMaterial(headMaterials[currHeadMatNum]);
     }
 
     void UpdateArmMaterials()
     {
-        arms[0].material = armMaterials[currArmMatNum];
-        arms[1].material = armMaterials[currArmMatNum];
+        cosmeticsManager.UpdateArmMaterial(armMaterials[currArmMatNum]);
     }
 }

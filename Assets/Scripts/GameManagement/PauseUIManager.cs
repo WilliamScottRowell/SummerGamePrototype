@@ -6,6 +6,7 @@ public class PauseUIManager : MonoBehaviour, ResetScript
 {
     // Attach various components of pause menu UI
     public Canvas mainPauseMenu;
+    public Canvas talentSystemCanvas;
     public MasterVolumeControl volumeControl;
     public bool disableAudioInMenu = true;
 
@@ -17,7 +18,8 @@ public class PauseUIManager : MonoBehaviour, ResetScript
 
     public void SetAllData()
     {
-        mainPauseMenu.gameObject.active = false;  // Start turned off
+        mainPauseMenu.gameObject.SetActive(false);  // Start turned off
+        talentSystemCanvas.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -28,7 +30,8 @@ public class PauseUIManager : MonoBehaviour, ResetScript
         {
             if(!mainPauseMenu.isActiveAndEnabled)  // If not in menu yet
             {
-                mainPauseMenu.gameObject.active = true;
+                talentSystemCanvas.gameObject.SetActive(false);
+                mainPauseMenu.gameObject.SetActive(true);
                 Time.timeScale = 0;
 
                 if(disableAudioInMenu && volumeControl != null)
@@ -38,7 +41,7 @@ public class PauseUIManager : MonoBehaviour, ResetScript
             }
             else
             {
-                mainPauseMenu.gameObject.active = false;
+                mainPauseMenu.gameObject.SetActive(false);
                 Time.timeScale = 1;
 
                 if (disableAudioInMenu && volumeControl != null)

@@ -14,6 +14,7 @@ public class CosmeticsMasterManager : MonoBehaviour
 
     private void Start()
     {
+        dressingRoom = GameObject.Find("PlayerDressingRoom").GetComponent<PlayerDressingRoom>();
         CreatePlayerConnections();
         SetInitialMaterials();
         UpdateAllMaterials();
@@ -23,7 +24,7 @@ public class CosmeticsMasterManager : MonoBehaviour
     public void CreatePlayerConnections()
     {
         playerCostmeticManager = GameObject.Find("Player").GetComponent<CosmeticsUpdateManager>();
-        dressingRoom = GameObject.Find("PlayerDressingRoom").GetComponent<PlayerDressingRoom>();
+        
     }
 
     void SetInitialMaterials()
